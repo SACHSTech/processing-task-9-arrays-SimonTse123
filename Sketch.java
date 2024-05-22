@@ -1,36 +1,162 @@
 import processing.core.PApplet;
 
+/**
+ * @description Program of Snow Flake Game
+ * @author Simon Tse
+ */
 public class Sketch extends PApplet {
-	
-	
-  /**
-   * Called once at the beginning of execution, put your size all in this method
-   */
+  // X and Y for snowflakes
+  float[] fltSnowX = new float[40];
+  float[] fltSnowY = new float[40];
+  float[] fltSnowDiameter = new float[40];
+  int intSpeed = 2;
+  int intPlayerX;
+  int intPlayerY;
+  int fltDiameter = 20;
+  int intLives = 3;
+  boolean blnHasStopped = false;
+
   public void settings() {
-	// put your size call here
     size(400, 400);
   }
 
-  /** 
-   * Called once at the beginning of execution.  Add initial set up
-   * values here i.e background, stroke, fill etc.
-   */
   public void setup() {
-    background(210, 255, 173);
+    background(0);
+    // Generate Random x- and y-values for snowflake
+    for (int intSnowFlake = 0; intSnowFlake < fltSnowX.length; intSnowFlake++) {
+      fltSnowX[intSnowFlake] = random(width);
+      fltSnowY[intSnowFlake] = random(height);
+      fltSnowDiameter[intSnowFlake] = fltDiameter;
+      circle(fltSnowX[intSnowFlake], fltSnowY[intSnowFlake], fltSnowDiameter[intSnowFlake]);
+    }
+    intPlayerX = width / 2;
+    intPlayerY = 350;
+  }
+
+  public void draw() {
+    if (blnHasStopped) {
+      // Do nothing
+    } else {
+      // Run Game
+      background(0);
+      // Check Key Pressed, Faster Here than method, Makes movement for player
+      if (keyPressed) {
+        if (key == 'w') {
+          intPlayerY -= 3;
+          if (intPlayerY < 0) {
+            intPlayerY = height;
+          }
+        } else if (key == 's') {
+          intPlayerY += 3;
+          if (intPlayerY > height) {
+            intPlayerY = 0;
+          }
+        } else if (key == 'a') {
+          intPlayerX -= 3;
+          if (intPlayerX < 0) {
+            intPlayerX = width;
+          }
+        } else if (key == 'd') {
+          intPlayerX += 3;
+          if (intPlayerX > width) {
+            intPlayerX = 0;
+          }
+        }
+      }
+      // Draw Player
+      fill(0, 0, 255);
+      circle(intPlayerX, intPlayerY, 25);
+      // Draw Snow
+      snow();
+      // Check Collision
+      for (int intSnowFlake = 0; intSnowFlake < fltSnowX.length - 1; intSnowFlake++) {
+        // Player Collision
+        if (abs(dist(intPlayerX, intPlayerY, fltSnowX[intSnowFlake],
+            fltSnowY[intSnowFlake])) < 15 && fltSnowDiameter[intSnowFlake] != 0) {
+          fltSnowDiameter[intSnowFlake] = 0;
+          intLives--;
+          if (intLives <= 0) {
+            kill();
+          }
+        }
+      }
+    }
+    // Check Lives
+    drawLives();
   }
 
   /**
-   * Called repeatedly, anything drawn to the screen goes here
+   * @description Kills Player, and shows Game Over
+   * @author Simon Tse
    */
-  public void draw() {
-	  
-	// sample code, delete this stuff
-    stroke(128);
-    line(150, 25, 270, 350);  
-
-    stroke(255);
-    line(50, 125, 70, 50);  
+  public void kill() {
+    blnHasStopped = true;
+    background(255);
+    fill(0);
+    textSize(50);
+    text("Game Over!", 75, height / 2);
   }
-  
-  // define other methods down here.
+
+  /**
+   * @description Draws Snowflakes
+   * @author Simon Tse
+   */
+  public void snow() {
+    fill(255);
+    for (int intSnowFlake = 0; intSnowFlake < fltSnowX.length; intSnowFlake++) {
+      circle(fltSnowX[intSnowFlake], fltSnowY[intSnowFlake], fltSnowDiameter[intSnowFlake] / 2);
+
+      fltSnowY[intSnowFlake] += intSpeed;
+      if (fltSnowY[intSnowFlake] >= height) {
+        fltSnowY[intSnowFlake] = 0;
+        fltSnowDiameter[intSnowFlake] = fltDiameter;
+      }
+    }
+  }
+
+  /**
+   * @description Checks special key presses
+   * @author Joel Menezes
+   */
+  public void keyPressed() {
+    // Snow Movement
+    if (keyCode == 40) {
+      intSpeed = 4;
+    } else if (keyCode == 38) {
+      intSpeed = 1;
+    }
+  }
+
+  /**
+   * @description Mouse Detection
+   * @author Simon Tse
+   */
+  public void mouseClicked() {
+    // Mouse Collision
+    for (int intSnowFlake = 0; intSnowFlake < fltSnowX.length; intSnowFlake++) {
+      if (abs(dist(mouseX, mouseY, fltSnowX[intSnowFlake], fltSnowY[intSnowFlake])) < fltSnowDiameter[intSnowFlake]
+          / 2) {
+        fltSnowDiameter[intSnowFlake] = 0;
+      }
+    }
+  }
+
+  /**
+   * @description Draws amount of lives to screen
+   * @author Simon Tse
+   */
+  public void drawLives() {
+    for (int intDrawnLives = 0; intDrawnLives < intLives; intDrawnLives++) {
+      fill(255, 0, 0);
+      square((float) 25 * intDrawnLives + 20, (float) 20, (float) 20);
+    }
+  }
+
+  /**
+   * @description Resets Speed settings
+   * @author Simon Tse
+   */
+  public void keyReleased() {
+    intSpeed = 2;
+  }
 }
