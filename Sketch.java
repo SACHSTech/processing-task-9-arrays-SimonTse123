@@ -116,7 +116,7 @@ public class Sketch extends PApplet {
 
   /**
    * @description Checks special key presses
-   * @author Joel Menezes
+   * @author Simon Tse
    */
   public void keyPressed() {
     // Snow Movement
