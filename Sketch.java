@@ -12,7 +12,7 @@ public class Sketch extends PApplet {
   int intSpeed = 2;
   int intPlayerX;
   int intPlayerY;
-  int fltDiameter = 20;
+  int fltDiameter = 30;
   int intLives = 3;
   boolean blnHasStopped = false;
 
