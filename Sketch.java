@@ -6,9 +6,9 @@ import processing.core.PApplet;
  */
 public class Sketch extends PApplet {
   // X and Y for snowflakes
-  float[] fltSnowX = new float[40];
-  float[] fltSnowY = new float[40];
-  float[] fltSnowDiameter = new float[40];
+  float[] fltSnowX = new float[30];
+  float[] fltSnowY = new float[30];
+  float[] fltSnowDiameter = new float[70];
   int intSpeed = 2;
   int intPlayerX;
   int intPlayerY;
@@ -116,7 +116,7 @@ public class Sketch extends PApplet {
 
   /**
    * @description Checks special key presses
-   * @author Simon Tse
+   * @author Joel Menezes
    */
   public void keyPressed() {
     // Snow Movement
